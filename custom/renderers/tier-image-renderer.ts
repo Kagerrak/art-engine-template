@@ -96,15 +96,19 @@ export class ImageLayersRendererTier
         );
       }
 
-      // Filter out the assets that should be excluded
+      // Add logging to see what assets are being processed
+      console.log(`Processing item ${itemUid} with assets:`, supportedAssets);
+
+      // Improved filter logic to extract part names and compare with excludeParts
       let assets = supportedAssets
-        .filter(
-          (asset) =>
-            !this.excludeParts.includes(
-              asset.path.split("/").pop()?.split("__")[0] || ""
-            )
-        )
+        .filter((asset) => {
+          const partName = asset.path.split("/").pop()?.split("__")[0] || "";
+          return !this.excludeParts.includes(partName);
+        })
         .sort((a, b) => a.zOffset - b.zOffset);
+
+      // Log the assets after filtering
+      console.log(`Filtered assets for item ${itemUid}:`, assets);
 
       const outputPath = path.join(this.tempRenderDir, `${itemUid}.png`);
 
